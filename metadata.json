@@ -1,0 +1,4 @@
+{"name": "Timewarrior indicator",
+  "description": "A simple panel, indicating the current activity as tracked from timewarrior",
+  "uuid": "timewarrior_indicator@natsakis.com",
+  "shell-version": ["3.22.3"]}
