@@ -28,8 +28,16 @@ const TimeWarriorIndicator = new Lang.Class({
 
   _refresh: function() {
     this.label.set_text(this._currentActivity());
+    this._removeTimeout();
     this._timeout = Mainloop.timeout_add_seconds(INTERVAL, Lang.bind(this, this._refresh));
     return true;
+  },
+
+  _removeTimeout: function() {
+    if (this._timeout) {
+      Mainloop.source_remove(this._timeout);
+      this._timeout = null;
+    }
   },
 
   _currentActivity: function() {
@@ -88,5 +96,6 @@ function enable() {
 }
 
 function disable() {
+    twMenu.stop();
     twMenu.destroy();
 }
