@@ -4,10 +4,11 @@ const GLib = imports.gi.GLib;
 const Main = imports.ui.main;
 const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
+const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 
 const timew = '/usr/bin/timew';
-const interval = 30;
+const interval = 10;
 
 const TimeWarriorIndicator = new Lang.Class({
   Name: 'TimeWarriorIndicator', Extends: PanelMenu.Button,
@@ -25,6 +26,8 @@ const TimeWarriorIndicator = new Lang.Class({
 
   _refresh: function() {
     this.label.set_text(this._currentActivity());
+    this._timeout = Mainloop.timeout_add_seconds(interval, Lang.bind(this, this._refresh));
+    return true;
   },
 
   _currentActivity: function() {
