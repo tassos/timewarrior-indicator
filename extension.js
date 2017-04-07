@@ -7,8 +7,9 @@ const PanelMenu = imports.ui.panelMenu;
 const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 
-const timew = '/usr/bin/timew';
-const interval = 10;
+const TIMEW = '/usr/bin/timew';
+const INTERVAL = 10;
+const ERROR = 1;
 
 const TimeWarriorIndicator = new Lang.Class({
   Name: 'TimeWarriorIndicator', Extends: PanelMenu.Button,
@@ -26,22 +27,26 @@ const TimeWarriorIndicator = new Lang.Class({
 
   _refresh: function() {
     this.label.set_text(this._currentActivity());
-    this._timeout = Mainloop.timeout_add_seconds(interval, Lang.bind(this, this._refresh));
+    this._timeout = Mainloop.timeout_add_seconds(INTERVAL, Lang.bind(this, this._refresh));
     return true;
   },
 
   _currentActivity: function() {
     let response = this._fetchActivity();
-    return response;
+    if (response == 1) {
+        return 'Something went wrong';
+    } else {
+      return response[0];
+    }
   },
 
   _fetchActivity: function(){
     try {
-        //[ok: Boolean, standard_output: ByteArray, standard_error: ByteArray, exit_status: Number(gint)]
-        let [res, out, err, status] = GLib.spawn_command_line_sync('date');
-        return out.toString();
+        let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEW);
+        let result = out.toString().split('\n');
+        return result;
       } catch (err) {
-          printerr(err);
+          return ERROR;
       }
   }
 });
