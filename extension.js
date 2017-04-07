@@ -43,8 +43,10 @@ const TimeWarriorIndicator = new Lang.Class({
   _currentActivity: function() {
     let response = this._fetchActivity();
     if (response == 1) {
-        return 'Something went wrong';
-    } else {
+      return 'Something went wrong';
+    } else if (response == 2) {
+      return 'No activity';
+    } else{
       return this._formatActivity(response);
     }
   },
@@ -52,7 +54,11 @@ const TimeWarriorIndicator = new Lang.Class({
   _fetchActivity: function(){
     try {
         let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEW);
-        return out;
+        if (status) {
+          return 2;
+        } else {
+          return out;
+        }
       } catch (err) {
           return ERROR;
       }
