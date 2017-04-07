@@ -1,8 +1,13 @@
 
 const St = imports.gi.St;
+const GLib = imports.gi.GLib;
 const Main = imports.ui.main;
 const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
+const Clutter = imports.gi.Clutter;
+
+const timew = '/usr/bin/timew';
+const interval = 30;
 
 const TimeWarriorIndicator = new Lang.Class({
   Name: 'TimeWarriorIndicator', Extends: PanelMenu.Button,
@@ -10,8 +15,31 @@ const TimeWarriorIndicator = new Lang.Class({
   _init: function()
   {
     this.parent(0.0, 'TimeWarrior Indicator', false);
-    let text = new St.Label({text: "No activity"});
-    this.actor.add_actor(text);
+    this.label = new St.Label({
+      text: "No activity",
+      y_align: Clutter.ActorAlign.CENTER
+    });
+    this.actor.add_actor(this.label);
+    this._refresh();
+  },
+
+  _refresh: function() {
+    this.label.set_text(this._currentActivity());
+  },
+
+  _currentActivity: function() {
+    let response = this._fetchActivity();
+    return response;
+  },
+
+  _fetchActivity: function(){
+    try {
+        //[ok: Boolean, standard_output: ByteArray, standard_error: ByteArray, exit_status: Number(gint)]
+        let [res, out, err, status] = GLib.spawn_command_line_sync('date');
+        return out.toString();
+      } catch (err) {
+          printerr(err);
+      }
   }
 });
 
