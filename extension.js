@@ -10,6 +10,7 @@ const Clutter = imports.gi.Clutter;
 const TIMEW = '/usr/bin/timew';
 const INTERVAL = 10;
 const ERROR = 1;
+const TAG_LIMIT = 20;
 
 const TimeWarriorIndicator = new Lang.Class({
   Name: 'TimeWarriorIndicator', Extends: PanelMenu.Button,
@@ -36,18 +37,44 @@ const TimeWarriorIndicator = new Lang.Class({
     if (response == 1) {
         return 'Something went wrong';
     } else {
-      return response[0];
+      return this._formatActivity(response);
     }
   },
 
   _fetchActivity: function(){
     try {
         let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEW);
-        let result = out.toString().split('\n');
-        return result;
+        return out;
       } catch (err) {
           return ERROR;
       }
+  },
+
+  _formatActivity: function(response){
+    let response = response.toString().split('\n');
+    tags = response[0].replace('Tracking','').trim().match(/[^\s"]+|"([^"]*)"/gi);
+    started = response[1].replace('Started','').trim();
+    duration = response[3].replace(/\s/g,'').replace('Total','');
+
+    activity = tags.sort(function (a, b) { return b.length - a.length; })[0];
+    activity = activity.replace(/"/g,'');
+    if (activity.length > TAG_LIMIT)
+      activity = activity.slice(0,TAG_LIMIT-3).concat('...');
+
+    duration = duration.split(':')
+    hours = duration[0];
+    minutes = duration[1];
+    seconds = duration[2];
+
+    response = activity.concat(' ',hours,':',minutes);
+    return response;
+  },
+
+  stop: function(){
+    if (this._timeout)
+      Mainloop.source_remove(this._timeout);
+    this._timeout = underfined;
+    this.menu.removeAll();
   }
 });
 
