@@ -118,6 +118,6 @@ function enable() {
 }
 
 function disable() {
-    twMenu.stop();
-    twMenu.destroy();
+    twInt.stop();
+    twInt.destroy();
 }
