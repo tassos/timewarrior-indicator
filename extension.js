@@ -103,7 +103,7 @@ const TimeWarriorIndicator = new Lang.Class({
   stop: function(){
     if (this._timeout)
       Mainloop.source_remove(this._timeout);
-    this._timeout = underfined;
+    this._timeout = undefined;
     this.menu.removeAll();
   }
 });
