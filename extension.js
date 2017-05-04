@@ -81,10 +81,10 @@ const TimeWarriorIndicator = new Lang.Class({
   },
 
   _formatActivity: function(response){
-    let response = response.toString().split('\n');
-    tags = response[0].replace('Tracking','').trim().match(/[^\s"]+|"([^"]*)"/gi);
-    started = response[1].replace('Started','').trim();
-    duration = response[3].replace(/\s/g,'').replace('Total','');
+    let fresponse = response.toString().split('\n');
+    tags = fresponse[0].replace('Tracking','').trim().match(/[^\s"]+|"([^"]*)"/gi);
+    started = fresponse[1].replace('Started','').trim();
+    duration = fresponse[3].replace(/\s/g,'').replace('Total','');
 
     activity = tags.sort(function (a, b) { return b.length - a.length; })[0];
     activity = activity.replace(/"/g,'');
