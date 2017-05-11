@@ -24,8 +24,9 @@ const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 
 const TIMEW = '/usr/bin/timew';
+const TIMEWACT = TIMEW.concat(' get dom.active');
+const TIMEWJSON = TIMEWACT.concat('.json');
 const INTERVAL = 10;
-const ERROR = 1;
 const TAG_LIMIT = 20;
 
 const TimeWarriorIndicator = new Lang.Class({
@@ -57,48 +58,43 @@ const TimeWarriorIndicator = new Lang.Class({
   },
 
   _currentActivity: function() {
-    let response = this._fetchActivity();
-    if (response == 1) {
-      return 'Something went wrong';
-    } else if (response == 2) {
-      return 'No activity';
-    } else{
-      return this._formatActivity(response);
-    }
+		let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEWACT);
+		if (out == 1) {
+	    response = this._fetchActivity();
+		} else {
+			response = 'No activity';
+		}
+		return response;
   },
 
   _fetchActivity: function(){
-    try {
-        let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEW);
-        if (status) {
-          return 2;
-        } else {
-          return out;
-        }
-      } catch (err) {
-          return ERROR;
-      }
+    let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEWJSON);
+		info = JSON.parse(out);
+
+		tags = info.tags.sort(function (a, b) { return b.length - a.length; });
+		start = this._parseDate(info.start);
+		now = new Date().getTime();
+		miliseconds = now-start.getTime();
+		duration = new Date(miliseconds);
+		activity = tags[0].slice(0,TAG_LIMIT).concat('... ');
+
+		hours = String(duration.getUTCHours());
+		minutes = String(duration.getUTCMinutes());
+		seconds = String(duration.getUTCSeconds());
+
+		return activity.concat(hours,':',minutes);
   },
 
-  _formatActivity: function(response){
-    let fresponse = response.toString().split('\n');
-    tags = fresponse[0].replace('Tracking','').trim().match(/[^\s"]+|"([^"]*)"/gi);
-    started = fresponse[1].replace('Started','').trim();
-    duration = fresponse[3].replace(/\s/g,'').replace('Total','');
-
-    activity = tags.sort(function (a, b) { return b.length - a.length; })[0];
-    activity = activity.replace(/"/g,'');
-    if (activity.length > TAG_LIMIT)
-      activity = activity.slice(0,TAG_LIMIT-3).concat('...');
-
-    duration = duration.split(':')
-    hours = duration[0];
-    minutes = duration[1];
-    seconds = duration[2];
-
-    response = activity.concat(' ',hours,':',minutes);
-    return response;
-  },
+	_parseDate: function(input){
+		return new Date(Date.UTC(
+			parseInt(input.slice(0, 4), 10),
+			parseInt(input.slice(4, 6), 10) - 1,
+			parseInt(input.slice(6, 8), 10),
+			parseInt(input.slice(9, 11), 10),
+			parseInt(input.slice(11, 13), 10),
+			parseInt(input.slice(13,15), 10)
+		));
+	},
 
   stop: function(){
     if (this._timeout)
