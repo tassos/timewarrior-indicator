@@ -78,12 +78,21 @@ const TimeWarriorIndicator = new Lang.Class({
 		duration = new Date(miliseconds);
 		activity = tags[0].slice(0,TAG_LIMIT).concat('... ');
 
-		hours = String(duration.getUTCHours());
-		minutes = String(duration.getUTCMinutes());
-		seconds = String(duration.getUTCSeconds());
+		hours = this._zeroPad(duration.getUTCHours());
+		minutes = this._zeroPad(duration.getUTCMinutes());
+		seconds = this._zeroPad(duration.getUTCSeconds());
 
 		return activity.concat(hours,':',minutes);
   },
+
+	_zeroPad(num){
+		snum = String(num);
+		lng = snum.length;
+		if (lng==1) {
+			snum = String(0).concat(snum);
+		}
+		return snum;
+	},
 
 	_parseDate: function(input){
 		return new Date(Date.UTC(
