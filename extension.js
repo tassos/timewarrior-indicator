@@ -85,7 +85,7 @@ const TimeWarriorIndicator = new Lang.Class({
 		return activity.concat(hours,':',minutes);
   },
 
-	_zeroPad(num){
+	_zeroPad: function(num){
 		snum = String(num);
 		lng = snum.length;
 		if (lng==1) {
