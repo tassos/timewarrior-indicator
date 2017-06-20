@@ -20,6 +20,7 @@ const GLib = imports.gi.GLib;
 const Main = imports.ui.main;
 const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
+const PopupMenu = imports.ui.popupMenu;
 const Mainloop = imports.mainloop;
 const Clutter = imports.gi.Clutter;
 
@@ -41,6 +42,17 @@ const TimeWarriorIndicator = new Lang.Class({
     });
     this.actor.add_actor(this.label);
     this._refresh();
+
+		// Adding menu items
+		this.stopMenuItem = new PopupMenu.PopupMenuItem(_('Stop tracking'));
+		this.restartMenuItem = new PopupMenu.PopupMenuItem(_('Restart tracking'));
+
+		this.menu.addMenuItem(this.stopMenuItem);
+		this.menu.addMenuItem(this.restartMenuItem);
+
+		// Bind menu items to actions
+		this.stopMenuItem.connect('activate', Lang.bind(this, this._stopTracking));
+		this.restartMenuItem.connect('activate', Lang.bind(this, this._restartTracking));
   },
 
   _refresh: function() {
@@ -103,6 +115,16 @@ const TimeWarriorIndicator = new Lang.Class({
 			parseInt(input.slice(11, 13), 10),
 			parseInt(input.slice(13,15), 10)
 		));
+	},
+
+	_stopTracking: function(){
+		GLib.spawn_command_line_sync(TIMEW.concat(' stop'));
+		this._refresh();
+	},
+
+	_restartTracking: function(){
+		GLib.spawn_command_line_sync(TIMEW.concat(' continue'));
+		this._refresh();
 	},
 
   stop: function(){
