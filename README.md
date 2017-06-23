@@ -29,8 +29,10 @@ has to be enabled with *gnome-tweak-tool*
 
 Some ideas for extra features:
 
-- Create a settings panel
-- Restart previous activities from the panel
+- ~~Create a settings panel~~ (implemented in 3862536)
+- ~~Restart previous activities from the panel~~ (implemented in 3862536)
+- Change the display format
+- Change the tag to display
 
 If you have any ideas on how to make this tool more useful, please contact me!
 
