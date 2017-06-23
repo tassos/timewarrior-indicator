@@ -1,0 +1,26 @@
+<schemalist gettext-domain="gnome-shell-extensions">
+  <schema id="org.gnome.shell.extensions.timewarrior-indicator"
+      path="/org/gnome/shell/extensions/timewarrior-indicator/">
+
+    <key type="i" name="interval">
+        <default>10</default>
+        <summary>Time interaval between updates of the indicator.</summary>
+        <description>Time interaval (in seconds) between updates of the indicator.</description>
+        <range min="1" max="5000"/>
+    </key>
+
+    <key type="i" name="tag-length">
+        <default>20</default>
+        <summary>Length of the tag.</summary>
+        <description>Length of the tag. If the tag is longer than this many characters, it gets truncated.</description>
+        <range min="5" max="100"/>
+    </key>
+
+    <key type="s" name="timew-cmd">
+      <default>"/usr/bin/timew"</default>
+      <summary>Location of the timew executable.</summary>
+      <description>Location of the timew executable.</description>
+    </key>
+
+  </schema>
+</schemalist>

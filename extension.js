@@ -15,20 +15,30 @@
  * program. If not, see http://www.gnu.org/licenses/.
  *
  */
-const St = imports.gi.St;
-const GLib = imports.gi.GLib;
-const Main = imports.ui.main;
+const Clutter = imports.gi.Clutter;
 const Lang = imports.lang;
+const Main = imports.ui.main;
+
+const St = imports.gi.St;
+const GObject = imports.gi.GObject;
+const GLib = imports.gi.GLib;
+const Gtk = imports.gi.Gtk;
+const Gio = imports.gi.Gio;
+const Util = imports.misc.util;
+
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Mainloop = imports.mainloop;
-const Clutter = imports.gi.Clutter;
 
-const TIMEW = '/usr/bin/timew';
-const TIMEWACT = TIMEW.concat(' get dom.active');
-const TIMEWJSON = TIMEWACT.concat('.json');
-const INTERVAL = 10;
-const TAG_LIMIT = 20;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
+const Utils = Me.imports.utils;
+
+let TIMEW = '/usr/bin/timew';
+let TIMEWACT = TIMEW.concat(' get dom.active');
+let TIMEWJSON = TIMEWACT.concat('.json');
+let INTERVAL = 10;
+let TAG_LIMIT = 20;
 
 const TimeWarriorIndicator = new Lang.Class({
   Name: 'TimeWarriorIndicator', Extends: PanelMenu.Button,
@@ -46,13 +56,21 @@ const TimeWarriorIndicator = new Lang.Class({
 		// Adding menu items
 		this.stopMenuItem = new PopupMenu.PopupMenuItem(_('Stop tracking'));
 		this.restartMenuItem = new PopupMenu.PopupMenuItem(_('Restart tracking'));
+		let settingsMenuItem = new PopupMenu.PopupMenuItem(_('Settings'));
 
 		this.menu.addMenuItem(this.stopMenuItem);
 		this.menu.addMenuItem(this.restartMenuItem);
+		this.menu.addMenuItem(settingsMenuItem);
 
 		// Bind menu items to actions
 		this.stopMenuItem.connect('activate', Lang.bind(this, this._stopTracking));
 		this.restartMenuItem.connect('activate', Lang.bind(this, this._restartTracking));
+		settingsMenuItem.connect('activate', Lang.bind(this, this._openSettings));
+
+		// Load settings
+		this._settings = Utils.getSettings();
+		this._settingsChangedId = this._settings.connect('changed', Lang.bind(this, this._applySettings));
+		this._applySettings();
   },
 
   _refresh: function() {
@@ -125,6 +143,18 @@ const TimeWarriorIndicator = new Lang.Class({
 	_restartTracking: function(){
 		GLib.spawn_command_line_sync(TIMEW.concat(' continue'));
 		this._refresh();
+	},
+
+	_openSettings: function () {
+		Util.spawn([ "gnome-shell-extension-prefs", Me.uuid ]);
+	},
+
+	_applySettings: function() {
+		INTERVAL = this._settings.get_int('interval');
+		TIMEW = this._settings.get_string('timew-cmd');
+		TAG_LIMIT = this._settings.get_int('tag-length');
+		TIMEWACT = TIMEW.concat(' get dom.active');
+		TIMEWJSON = TIMEWACT.concat('.json');
 	},
 
   stop: function(){

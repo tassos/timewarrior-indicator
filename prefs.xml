@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<!--
+    This file is part of Timewarrior Indicator
+
+    Timewarrior Indicator is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Timewarrior Indicator is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Timewarrior Indicator.  If not, see <http://www.gnu.org/licenses/>.
+
+    Copyright (C) 2017 Tassos Natsakis
+-->
+<interface domain="timew-indicator">
+
+<object class="GtkAdjustment" id="update_interval">
+	<property name="lower">1</property>
+	<property name="upper">5000</property>
+	<property name="step_increment">1</property>
+</object>
+<object class="GtkAdjustment" id="tag_length">
+	<property name="lower">5</property>
+	<property name="upper">50</property>
+	<property name="step_increment">1</property>
+</object>
+
+<!-- <object class="GtkNotebook" id="prefs_widget">
+	<property name="expand">true</property>
+
+	<child> -->
+		<object class="GtkGrid" id="prefs_widget">
+			<property name="margin">18</property>
+			<property name="row-spacing">18</property>
+			<property name="row-homogeneous">false</property>
+			<property name="orientation">vertical</property>
+
+			<child>
+				<object class="GtkVBox">
+				<property name="spacing">6</property>
+
+					<child>
+						<object class="GtkBox">
+							<property name="spacing">12</property>
+							<child>
+								<object class="GtkLabel">
+									<property name="label" translatable="yes">Indicator</property>
+									<property name="hexpand">true</property>
+									<property name="halign">1</property>
+									<attributes>
+										<attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+									</attributes>
+								</object>
+							</child>
+						</object>
+					</child>
+
+					<child>
+						<object class="GtkBox">
+							<property name="margin-left">12</property>
+							<property name="spacing">12</property>
+							<child>
+								<object class="GtkLabel">
+									<property name="label" translatable="yes">Update interval (sec)</property>
+									<property name="hexpand">true</property>
+									<property name="halign">1</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkSpinButton" id="update-interval">
+									<property name="adjustment">update_interval</property>
+								</object>
+							</child>
+						</object>
+					</child>
+
+					<child>
+						<object class="GtkBox">
+							<property name="margin-left">12</property>
+							<property name="spacing">12</property>
+							<child>
+								<object class="GtkLabel">
+									<property name="label" translatable="yes">Tag length</property>
+									<property name="hexpand">true</property>
+									<property name="halign">1</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkSpinButton" id="tag-length">
+									<property name="adjustment">tag_length</property>
+								</object>
+							</child>
+						</object>
+					</child>
+
+				</object>
+			</child>
+
+			<child>
+				<object class="GtkVBox">
+				<property name="spacing">6</property>
+
+					<child>
+						<object class="GtkLabel">
+							<property name="label" translatable="yes">System</property>
+							<property name="hexpand">true</property>
+							<property name="halign">1</property>
+							<attributes>
+								<attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+							</attributes>
+						</object>
+					</child>
+
+					<child>
+						<object class="GtkVBox">
+							<property name="spacing">6</property>
+							<child>
+								<object class="GtkLabel">
+									<property name="label" translatable="yes">Timewarrior executable</property>
+									<property name="hexpand">true</property>
+									<property name="halign">1</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkEntry" id="timew-cmd">
+								</object>
+							</child>
+						</object>
+					</child>
+				</object>
+			</child>
+
+		</object>
+	<!-- </child>
+</object> -->
+
+</interface>
