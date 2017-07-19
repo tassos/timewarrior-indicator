@@ -106,13 +106,17 @@ const TimeWarriorIndicator = new Lang.Class({
 		now = new Date().getTime();
 		miliseconds = now-start.getTime();
 		duration = new Date(miliseconds);
-		activity = tags[0].slice(0,TAG_LIMIT).concat('... ');
+
+		activity = tags[0];
+		if (tags[0].length > TAG_LIMIT) {
+			activity = activity.slice(0,TAG_LIMIT).concat('...');
+		}
 
 		hours = this._zeroPad(duration.getUTCHours());
 		minutes = this._zeroPad(duration.getUTCMinutes());
 		seconds = this._zeroPad(duration.getUTCSeconds());
 
-		return activity.concat(hours,':',minutes);
+		return activity.concat(' ',hours,':',minutes);
   },
 
 	_zeroPad: function(num){
