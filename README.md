@@ -29,8 +29,8 @@ has to be enabled with *gnome-tweak-tool*
 
 Some ideas for extra features:
 
-- ~~Create a settings panel~~ (implemented in 3862536)
-- ~~Restart previous activities from the panel~~ (implemented in 3862536)
+- ~~Create a settings panel~~ (implemented in 38625363c7c357a69418896f5ff35377abe62ef6)
+- ~~Restart previous activities from the panel~~ (implemented in 38625363c7c357a69418896f5ff35377abe62ef6)
 - Change the display format
 - Change the tag to display
 
