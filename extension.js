@@ -37,6 +37,7 @@ const Utils = Me.imports.utils;
 let TIMEW = '/usr/bin/timew';
 let TIMEWACT = TIMEW.concat(' get dom.active');
 let TIMEWJSON = TIMEWACT.concat('.json');
+let TAG_DEFAULT = "Work";
 let INTERVAL = 10;
 let TAG_LIMIT = 20;
 
@@ -132,8 +133,12 @@ const TimeWarriorIndicator = new Lang.Class({
 		hours = this._zeroPad(duration.getUTCHours());
 		minutes = this._zeroPad(duration.getUTCMinutes());
 		seconds = this._zeroPad(duration.getUTCSeconds());
+		
+		let [sres, sout, serr, sstatus] = GLib.spawn_command_line_sync(TIMEW+ " s");
+		let lines = sout.toString().split(/\n/);
+		let total = lines[lines.length - 3].trim();
 
-		return activity.concat(' ',hours,':',minutes);
+		return activity.concat(' ',hours,':',minutes) + " ⌛ " + total;
   },
 
 	_zeroPad: function(num){
