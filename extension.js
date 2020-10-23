@@ -50,7 +50,14 @@ const TimeWarriorIndicator = new Lang.Class({
       text: "No activity",
       y_align: Clutter.ActorAlign.CENTER
     });
-    this.actor.add_actor(this.label);
+
+          let box = new St.BoxLayout();
+          this.icon = new St.Icon({ icon_name: 'user-available',
+                                  style_class: 'system-status-icon' });
+
+          box.add_actor(this.icon);
+          box.add_actor(this.label)
+    this.actor.add_actor(box);
     this._refresh();
 
 		// Adding menu items
@@ -74,7 +81,14 @@ const TimeWarriorIndicator = new Lang.Class({
   },
 
   _refresh: function() {
-    this.label.set_text(this._currentActivity());
+    let v = this._currentActivity();
+    if (v == null) {
+    	this.label.set_text('No activity');
+    	this.icon.icon_name = 'user-offline';
+    } else {
+	    this.label.set_text(this._currentActivity());
+    	this.icon.icon_name = 'user-available';
+    }
     this._removeTimeout();
     this._timeout = Mainloop.timeout_add_seconds(INTERVAL, Lang.bind(this, this._refresh));
     return true;
@@ -92,7 +106,7 @@ const TimeWarriorIndicator = new Lang.Class({
 		if (out == 1) {
 	    response = this._fetchActivity();
 		} else {
-			response = 'No activity';
+			response = null; //'No activity';
 		}
 		return response;
   },
@@ -101,7 +115,10 @@ const TimeWarriorIndicator = new Lang.Class({
     let [res, out, err, status] = GLib.spawn_command_line_sync(TIMEWJSON);
 		info = JSON.parse(out);
 
-		tags = info.tags.sort(function (a, b) { return b.length - a.length; });
+		if ("tags" in info)
+			tags = info.tags.sort(function (a, b) { return b.length - a.length; });
+		else
+			tags = [TAG_DEFAULT];
 		start = this._parseDate(info.start);
 		now = new Date().getTime();
 		miliseconds = now-start.getTime();
@@ -157,6 +174,7 @@ const TimeWarriorIndicator = new Lang.Class({
 		INTERVAL = this._settings.get_int('interval');
 		TIMEW = this._settings.get_string('timew-cmd');
 		TAG_LIMIT = this._settings.get_int('tag-length');
+		TAG_DEFAULT = "Work"; //this._settings.get_string('default-tag-text');
 		TIMEWACT = TIMEW.concat(' get dom.active');
 		TIMEWJSON = TIMEWACT.concat('.json');
 	},
