@@ -44,6 +44,5 @@ function buildPrefsWidget(){
 	settings.bind('tag-length' , buildable.get_object('tag-length') , 'value' , Gio.SettingsBindFlags.DEFAULT);
 	settings.bind('timew-cmd' , buildable.get_object('timew-cmd') , 'text' , Gio.SettingsBindFlags.DEFAULT);
 
-	box.show_all();
 	return box;
 };

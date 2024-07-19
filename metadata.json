@@ -1,7 +1,7 @@
 {"name": "Timewarrior indicator",
   "description": "A simple panel, indicating the current activity as tracked from timewarrior",
   "uuid": "timewarrior-indicator@natsakis.com",
-  "shell-version": ["3.22.3","3.24.1"],
+  "shell-version": ["42.9"],
 	"url": "https://www.github.com/tassos/timewarrior-indicator",
-	"version": "3.1"
+	"version": "3.2"
 	}
